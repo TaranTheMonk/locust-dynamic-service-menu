@@ -13,4 +13,4 @@ WORKDIR ${LOCUST_DIR}
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT [${LOCUST_DIR}/scripts/docker-entrypoint.sh]
+ENTRYPOINT ["sh", "./scripts/docker-entrypoint.sh"]
