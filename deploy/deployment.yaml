@@ -1,0 +1,46 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: dynamic-service-menu-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dynamic-service-menu-test
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dynamic-service-menu-test
+    spec:
+      containers:
+      - image: grabds/locust:dynamic-service-menu-dev
+        imagePullPolicy: Always
+        name: master
+        ports:
+        - containerPort: 8089
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1800m
+            memory: 4Gi
+          requests:
+            cpu: 1800m
+            memory: 4Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: grabdsbot
+      nodeSelector:
+        type: services
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
